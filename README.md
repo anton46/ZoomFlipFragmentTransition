@@ -1,4 +1,4 @@
-FlipZoomFragmentTransition
+ZoomFlipFragmentTransition
 ==========================
 
 An android custom view which looks like the music/movie pop up transition in Path.
