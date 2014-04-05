@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
@@ -34,6 +35,11 @@ public class ZoomFlipActivity extends Activity implements
 	private static final String SECOND_BUTTON = "second";
 	private static String TYPE;
 	
+	private final Rect startBounds = new Rect();
+	private final Rect finalBounds = new Rect();
+	private final Point globalOffset = new Point();
+	private float startScaleFinal;
+	
 	private Animator mCurrentAnimator;
 	private Handler mHandler = new Handler();
 	private boolean mShowingBack = false;
@@ -42,7 +48,7 @@ public class ZoomFlipActivity extends Activity implements
 	private TouchHighlightImageButton mImageBtn;
 	private TouchHighlightImageButton mImageBtn_2;
 	
-	
+	private OnClickListener zoomOutClickListener;
 	
 	//fragment
 	private CardBackFragment mBackFragment;
@@ -72,7 +78,7 @@ public class ZoomFlipActivity extends Activity implements
 			public void onClick(View v) {
 				flipCard();
 				TYPE = FIRST_BUTTON;
-				mFrontFragment.setImage(R.drawable.image1);
+				mFrontFragment.setImage(R.drawable.arsenal);
 				zoomImageFromThumb(mImageBtn);
 			}
 		});
@@ -82,7 +88,7 @@ public class ZoomFlipActivity extends Activity implements
 			public void onClick(View v) {
 				flipCard();
 				TYPE = SECOND_BUTTON;
-				mFrontFragment.setImage(R.drawable.image2);
+				mFrontFragment.setImage(R.drawable.madrid);
 				zoomImageFromThumb(mImageBtn_2);
 			}
 		});
@@ -117,11 +123,13 @@ public class ZoomFlipActivity extends Activity implements
 
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
-		if (mShowingBack)
+		if (mShowingBack){
 			flipCard();
-		else
-			finish();
+			moveToThumb(startBounds, startScaleFinal);
+		}
+		else {
+			super.onBackPressed();
+		}
 	}
 
 	@SuppressLint("NewApi")
@@ -197,10 +205,6 @@ public class ZoomFlipActivity extends Activity implements
 
 		final RelativeLayout expandedImageView = (RelativeLayout) findViewById(R.id.main);
 
-		final Rect startBounds = new Rect();
-		final Rect finalBounds = new Rect();
-		final Point globalOffset = new Point();
-
 		vButton.getGlobalVisibleRect(startBounds);
 		findViewById(R.id.container).getGlobalVisibleRect(finalBounds,
 				globalOffset);
@@ -230,24 +234,21 @@ public class ZoomFlipActivity extends Activity implements
 
 		moveToCenter(startBounds, finalBounds, startScale);
 
-		final float startScaleFinal = startScale;
-		expandedImageView.setOnClickListener(new View.OnClickListener() {
+		startScaleFinal = startScale;
+		zoomOutClickListener = new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				flipCard();
-				moveToThumb(startBounds, startScaleFinal);
+				if(mShowingBack) {
+					flipCard();
+					moveToThumb(startBounds, startScaleFinal);
+				}
 			}
-		});
-
-		mOverlayLayout.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				flipCard();
-				moveToThumb(startBounds, startScaleFinal);
-			}
-		});
+		};
+		
+		//expandedImageView.setOnClickListener(zoomOutClickListener);
+		mOverlayLayout.setOnClickListener(zoomOutClickListener);
 	}
+	
 
 	@Override
 	public void onBackStackChanged() {
@@ -272,13 +273,14 @@ public class ZoomFlipActivity extends Activity implements
 			View v = inflater.inflate(R.layout.fragment_card_front, container,
 					false);
 			mFrontImage = (ImageView) v.findViewById(R.id.image_robot);
-			mFrontImage.setImageResource(TYPE == FIRST_BUTTON ? R.drawable.image1 : R.drawable.image2);
+			mFrontImage.setImageResource(TYPE == FIRST_BUTTON ? R.drawable.arsenal : R.drawable.madrid);
 			return v;
 		}
 	}
 
 	public static class CardBackFragment extends Fragment {
 		private ImageView mBackImage;
+		private TextView mTextView;
 		
 		public CardBackFragment(){
 		}
@@ -289,7 +291,9 @@ public class ZoomFlipActivity extends Activity implements
 			View v  =  inflater.inflate(R.layout.fragment_card_back, container,
 					false);
 			mBackImage = (ImageView) v.findViewById(R.id.image_robot);
-			mBackImage.setImageResource(TYPE == FIRST_BUTTON ? R.drawable.image1 : R.drawable.image2);
+			mBackImage.setImageResource(TYPE == FIRST_BUTTON ? R.drawable.arsenal : R.drawable.madrid);
+			mTextView = (TextView) v.findViewById(R.id.text);
+			mTextView.setText(TYPE == FIRST_BUTTON ? "Arsenal" : "Real Madrid");
 			return v;
 		}
 	}
