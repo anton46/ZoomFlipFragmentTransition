@@ -35,8 +35,8 @@ public class ZoomFlipActivity extends Activity implements
 	private FrameLayout mParentLayout;
 	private RelativeLayout mMainContainer;
 	private RelativeLayout mOverlayLayout;
-	private TouchHighlightImageButton mImageBtn;
-	private TouchHighlightImageButton mImageBtn_2;
+	private TouchHighlightImageButton mThumb1;
+	private TouchHighlightImageButton mThumb2;
 	
 	//fragment
 	private CardBackFragment mBackFragment;
@@ -60,8 +60,8 @@ public class ZoomFlipActivity extends Activity implements
 		mMainContainer.setVisibility(View.GONE);
 
 		mOverlayLayout = (RelativeLayout) findViewById(R.id.overlay);
-		mImageBtn = (TouchHighlightImageButton) findViewById(R.id.thumb_button);
-		mImageBtn_2 = (TouchHighlightImageButton) findViewById(R.id.thumb_button_2);
+		mThumb1 = (TouchHighlightImageButton) findViewById(R.id.thumb_button);
+		mThumb2 = (TouchHighlightImageButton) findViewById(R.id.thumb_button_2);
 		
 		mZoomFlip = new ZoomFlip(mParentLayout, mMainContainer, mOverlayLayout);
 		mZoomFlip.setShowingBackListener(new ShowingBackListener() {
@@ -71,24 +71,24 @@ public class ZoomFlipActivity extends Activity implements
 			}
 		});
 
-		mImageBtn.setOnClickListener(new OnClickListener() {
+		mThumb1.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				flip();
 				TYPE = FIRST_BUTTON;
 				mFrontFragment.setImage(R.drawable.arsenal);
-				mZoomFlip.zoomImageFromThumb(mImageBtn);
+				mZoomFlip.zoomImageFromThumb(mThumb1);
 			}
 		});
-		mImageBtn_2.setOnClickListener(new OnClickListener() {
+		mThumb2.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				flip();
 				TYPE = SECOND_BUTTON;
 				mFrontFragment.setImage(R.drawable.madrid);
-				mZoomFlip.zoomImageFromThumb(mImageBtn_2);
+				mZoomFlip.zoomImageFromThumb(mThumb2);
 			}
 		});
 

@@ -23,6 +23,7 @@ public class ZoomFlip {
 	private View mMainContainer;
 	private View mOverlayLayout;
 	private View mParentLayout;
+	private View mThumb;
 
 	private final Rect startBounds = new Rect();
 	private final Rect finalBounds = new Rect();
@@ -61,6 +62,7 @@ public class ZoomFlip {
 		set.addListener(new AnimatorListenerAdapter() {
 			@Override
 			public void onAnimationEnd(Animator animation) {
+				mThumb.setAlpha(1f);
 				mMainContainer.setVisibility(View.GONE);
 				mOverlayLayout.setVisibility(View.GONE);
 				mCurrentAnimator = null;
@@ -68,6 +70,7 @@ public class ZoomFlip {
 
 			@Override
 			public void onAnimationCancel(Animator animation) {
+				mThumb.setAlpha(1f);
 				mMainContainer.setVisibility(View.GONE);
 				mOverlayLayout.setVisibility(View.GONE);
 				mCurrentAnimator = null;
@@ -111,11 +114,12 @@ public class ZoomFlip {
 	}
 
 	public void zoomImageFromThumb(View vThumb) {
+		mThumb = vThumb;
 		if (mCurrentAnimator != null) {
 			mCurrentAnimator.cancel();
 		}
-
-		vThumb.getGlobalVisibleRect(startBounds);
+		
+		mThumb.getGlobalVisibleRect(startBounds);
 		mParentLayout.getGlobalVisibleRect(finalBounds, globalOffset);
 		startBounds.offset(-globalOffset.x, -globalOffset.y);
 		finalBounds.offset(-globalOffset.x, -globalOffset.y);
@@ -135,7 +139,8 @@ public class ZoomFlip {
 			startBounds.top -= deltaHeight;
 			startBounds.bottom += deltaHeight;
 		}
-
+		
+		mThumb.setAlpha(0f);
 		mOverlayLayout.setVisibility(View.VISIBLE);
 		mMainContainer.setVisibility(View.VISIBLE);
 		mMainContainer.setPivotX(0f);
