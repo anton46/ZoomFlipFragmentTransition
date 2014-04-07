@@ -155,7 +155,6 @@ public class ZoomFlip {
 			public void onClick(View view) {
 				if (mIsShowingBack) {
 					mShowingBackListener.onShowingBackClick();
-					moveToThumb(startBounds, startScaleFinal);
 				}
 			}
 		};

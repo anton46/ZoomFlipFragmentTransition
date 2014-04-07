@@ -68,6 +68,7 @@ public class ZoomFlipActivity extends Activity implements
 			@Override
 			public void onShowingBackClick() {
 				flip();
+				mZoomFlip.moveToThumb();
 			}
 		});
 
